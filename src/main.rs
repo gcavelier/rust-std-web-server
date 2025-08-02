@@ -334,6 +334,10 @@ fn parse_args() -> Config {
                 };
                 res.directory = arg_value;
             }
+            "-v" => {
+                println!("{}", env!("CARGO_PKG_VERSION"));
+                std::process::exit(0);
+            }
             _ => panic!("bad option"),
         }
     }
