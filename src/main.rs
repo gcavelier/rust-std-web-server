@@ -10,6 +10,18 @@ const DEFAULT_PORT: u16 = 8080;
 const DEFAULT_ADDRESS: &str = "0.0.0.0";
 const DEFAULT_DIR: &str = ".";
 const DEFAULT_MIME_TYPE: &str = "application/octet-stream";
+const USAGE: &str = "
+Usage: rust-std--web-server [-p port] [-b addr] [-d dir]
+
+An HTTP server using only the Rust standard library.
+
+Options
+  -b <addr>  Address to bind to, defaults to 0.0.0.0.
+  -d <dir>   Directory to serve, defaults to your current directory.
+  -h         Print this message and exit.
+  -p <port>  Port to bind to, defaults to 8080.
+  -v         Print the version number and exit.
+";
 
 struct Config {
     port: u16,
@@ -338,7 +350,14 @@ fn parse_args() -> Config {
                 println!("{}", env!("CARGO_PKG_VERSION"));
                 std::process::exit(0);
             }
-            _ => panic!("bad option"),
+            "-h" => {
+                println!("{USAGE}");
+                std::process::exit(0);
+            }
+            _ => {
+                println!("{USAGE}");
+                std::process::exit(2);
+            }
         }
     }
 
