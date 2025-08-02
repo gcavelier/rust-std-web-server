@@ -182,25 +182,43 @@ fn list_directory(directory: &str) -> Result<String, Box<dyn Error>> {
     // The first entry is always '..'
     writeln!(&mut res, "  <li><a href=\"..\">..</a></li>")?;
 
+    let mut directories = Vec::new();
+    let mut files = Vec::new();
+
     for path in std::fs::read_dir(directory)? {
         let path = path?;
         let path_string = path
             .file_name()
             .into_string()
             .unwrap_or_else(|_| panic!("cannot convert '{path:?}' into a string!"));
-        let display_name = match path.file_type()?.is_dir() {
-            true => {
-                format!("📁 {path_string}/")
-            }
-            false => format!("📄 {path_string}"),
-        };
+        if path.file_type()?.is_dir() {
+            directories.push(path_string);
+        } else {
+            files.push(path_string);
+        }
+    }
+
+    directories.sort();
+    files.sort();
+
+    for path_string in directories {
         writeln!(
             res,
             "  <li><a href=\"{}\">{}</a></li>",
             url_encode(&path_string),
-            html_encode(display_name)
+            html_encode(format!("📁 {path_string}/"))
         )?;
     }
+
+    for path_string in files {
+        writeln!(
+            res,
+            "  <li><a href=\"{}\">{}</a></li>",
+            url_encode(&path_string),
+            html_encode(format!("📄 {path_string}"))
+        )?;
+    }
+
     writeln!(&mut res, "</ul>")?;
     writeln!(&mut res, "<hr>")?;
     writeln!(&mut res, "</html>")?;
