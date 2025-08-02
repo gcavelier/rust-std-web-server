@@ -349,7 +349,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .unwrap_or_else(|_| panic!("failed to move to '{}'", config.directory));
 
     println!("Listening on http://{}:{}", config.address, config.port);
-    println!("serving out of {}", config.directory);
+    println!("serving out of {}", std::env::current_dir()?.display());
 
     loop {
         let (tcp_stream, _sock_addr) = listener.accept()?;
