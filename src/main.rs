@@ -156,6 +156,9 @@ fn list_directory(directory: &str) -> Result<String, Box<dyn Error>> {
     color: CanvasText;
     color-scheme: light dark;
   }}
+  a, a:visited, a:active {{
+    text-decoration: none;
+  }}
   </style>
 </head>"
     )?;
@@ -279,7 +282,7 @@ fn process_request(tcp_stream: TcpStream) -> Result<(), Box<dyn Error>> {
         } else {
             // try a directory listing
             tcp_stream.write_all("HTTP/1.1 200 OK\r\n".as_bytes())?;
-            tcp_stream.write_all("Content-Type: text/html\r\n".as_bytes())?;
+            tcp_stream.write_all("Content-Type: text/html; charset=utf-8\r\n".as_bytes())?;
             tcp_stream.write_all("\r\n".as_bytes())?;
             tcp_stream.write_all(list_directory(&path)?.as_bytes())?;
         }
